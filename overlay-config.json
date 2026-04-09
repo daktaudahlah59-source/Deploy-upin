@@ -1,0 +1,14 @@
+{
+  "enabled": true,
+  "content": null,
+  "css": {
+    "background": "rgba(0,0,0,0.9)",
+    "accentColor": "#667eea"
+  },
+  "text": {
+    "title": "Terima Kasih!",
+    "message": "Website ini dideploy menggunakan Bot Telegram",
+    "owner": "@UpinXD",
+    "closeHint": "Klik dimana saja untuk menutup"
+  }
+}
