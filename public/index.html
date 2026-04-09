@@ -1,0 +1,2304 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>Upin | Portofolio</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-gradient-1: #0a0a0f;
+            --bg-gradient-2: #1a1a2e;
+            --bg-gradient-3: #16213e;
+            --text-primary: #fff;
+            --text-secondary: #ccc;
+            --card-bg: rgba(26, 26, 46, 0.8);
+            --border-color: rgba(255, 0, 0, 0.2);
+            --accent: #ff0000;
+            --accent-gradient: linear-gradient(45deg, #ff0000, #AD4AE7);
+            --gold: #FFD700;
+            --blue: #00D4FF;
+            --pink: #FF69B4;
+        }
+
+        body.light-mode {
+            --bg-gradient-1: #f5f5f5;
+            --bg-gradient-2: #e8e8e8;
+            --bg-gradient-3: #ffffff;
+            --text-primary: #1a1a2e;
+            --text-secondary: #4a4a6a;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --border-color: rgba(255, 0, 0, 0.3);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            color: var(--text-primary);
+            overflow-x: hidden;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        /* BROADCAST POPUP */
+        .broadcast-container {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1001;
+            width: 90%;
+            max-width: 500px;
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateX(-50%) translateY(-20px); }
+            to { opacity: 1; transform: translateX(-50%) translateY(0); }
+        }
+
+        .broadcast-card {
+            background: linear-gradient(135deg, #ff0000, #AD4AE7);
+            border-radius: 15px;
+            padding: 15px 20px;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            cursor: pointer;
+        }
+
+        .broadcast-card .close-broadcast {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            cursor: pointer;
+            font-size: 18px;
+            opacity: 0.8;
+        }
+
+        .broadcast-card .close-broadcast:hover {
+            opacity: 1;
+        }
+
+        .broadcast-card h4 {
+            margin-bottom: 8px;
+            padding-right: 25px;
+        }
+
+        .broadcast-card p {
+            font-size: 0.85rem;
+            opacity: 0.95;
+        }
+
+        /* MAINTENANCE OVERLAY TOOLS */
+        .maintenance-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.95);
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            backdrop-filter: blur(5px);
+        }
+
+        .maintenance-overlay .maintenance-card {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 30px;
+            padding: 40px;
+            text-align: center;
+            border: 2px solid #ff0000;
+            max-width: 400px;
+            margin: 20px;
+        }
+
+        .maintenance-overlay i {
+            font-size: 4rem;
+            color: #ff0000;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        .maintenance-overlay h2 {
+            margin-bottom: 15px;
+        }
+
+        .maintenance-overlay p {
+            color: #ccc;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--bg-gradient-1), var(--bg-gradient-2));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loading-screen.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader {
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loader-logo-row {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .loader .logo {
+            font-size: 3rem;
+            color: var(--accent);
+            animation: pulse 1.5s infinite;
+        }
+
+        .loader h2 {
+            color: var(--text-primary);
+            font-size: 2.5rem;
+            margin: 0;
+        }
+
+        .loader-bar {
+            width: 250px;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .loader-progress {
+            width: 0;
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+            animation: loading 2s ease forwards;
+        }
+
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 50%, var(--bg-gradient-3) 100%);
+        }
+
+        body.light-mode #particleCanvas {
+            background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 50%, #ffffff 100%);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 10, 15, 0.9);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            padding: 1rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        body.light-mode .header {
+            background: rgba(245, 245, 245, 0.9);
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo h2 {
+            color: var(--accent);
+            font-size: 1.5rem;
+        }
+
+        .battery-widget {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            backdrop-filter: blur(5px);
+        }
+
+        .battery-icon {
+            position: relative;
+            width: 28px;
+            height: 14px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            border: 1px solid var(--text-secondary);
+        }
+
+        .battery-level {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 100%;
+            background: #4ade80;
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .battery-tip {
+            position: absolute;
+            right: -4px;
+            top: 3px;
+            width: 4px;
+            height: 6px;
+            background: var(--text-secondary);
+            border-radius: 1px;
+        }
+
+        .battery-text {
+            font-size: 0.65rem;
+            font-weight: 600;
+        }
+
+        .charging-icon {
+            color: #4ade80;
+            font-size: 0.7rem;
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--accent);
+        }
+
+        .admin-badge {
+            background: var(--accent);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .admin-badge:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: var(--text-primary);
+            margin: 3px 0;
+            transition: 0.3s;
+        }
+
+        .page {
+            min-height: 100vh;
+            padding: 100px 0 60px;
+            display: none;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .hero-text h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-text .highlight {
+            color: var(--accent);
+        }
+
+        .typing-text {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            min-height: 3rem;
+        }
+
+        .hero-text p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            border: none;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-secondary:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .profile-card {
+            width: 280px;
+            height: 280px;
+            margin: 0 auto;
+            border-radius: 50%;
+            border: 3px solid rgba(255, 0, 0, 0.3);
+            animation: float 3s ease-in-out infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .profile-card img {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--accent);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--accent);
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 3px;
+            background: var(--accent-gradient);
+            border-radius: 2px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+            margin-right: 10px;
+        }
+
+        .section-title p {
+            color: var(--text-secondary);
+            margin-top: 15px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .skill-card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+
+        .skill-card i {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .skill-bar {
+            background: rgba(255, 255, 255, 0.1);
+            height: 8px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: var(--accent-gradient);
+            border-radius: 10px;
+            width: 0;
+        }
+
+        .projects-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .project-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+
+        .project-icon {
+            height: 160px;
+            background: rgba(255, 0, 0, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .project-icon i {
+            font-size: 3rem;
+            color: var(--accent);
+        }
+
+        .project-content {
+            padding: 1.5rem;
+        }
+
+        .project-content h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .project-content p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .project-tech {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .project-tech span {
+            background: rgba(255, 0, 0, 0.2);
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .deploy-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+
+        .tool-card i {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .tool-card h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .tool-card p {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+
+        .tool-card small {
+            font-size: 0.7rem;
+            margin-top: 8px;
+            display: block;
+        }
+
+        .tool-card.disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            filter: grayscale(0.3);
+        }
+
+        .tool-card.disabled:hover {
+            transform: none;
+        }
+
+        .maintenance-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ff0000;
+            color: white;
+            font-size: 0.6rem;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .project-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .drop-zone {
+            border: 2px dashed rgba(255, 0, 0, 0.5);
+            border-radius: 15px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-bottom: 1.5rem;
+        }
+
+        .drop-zone:hover, .drop-zone.drag-over {
+            border-color: var(--accent);
+            background: rgba(255, 0, 0, 0.1);
+        }
+
+        .file-info {
+            background: rgba(255, 0, 0, 0.15);
+            border-radius: 10px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .remove-file {
+            background: rgba(239, 68, 68, 0.2);
+            border: none;
+            color: #f87171;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        .deploy-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .deploy-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .status-area {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 10px;
+            display: none;
+        }
+
+        .status-area.success {
+            background: rgba(34, 197, 94, 0.15);
+            border-left: 3px solid #22c55e;
+            display: block;
+        }
+
+        .status-area.error {
+            background: rgba(239, 68, 68, 0.15);
+            border-left: 3px solid #ef4444;
+            display: block;
+        }
+
+        .status-area.loading {
+            background: rgba(255, 0, 0, 0.15);
+            border-left: 3px solid var(--accent);
+            display: block;
+        }
+
+        .result-area {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 10px;
+            display: none;
+        }
+
+        .result-area.show {
+            display: block;
+        }
+
+        .copy-btn {
+            background: rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            padding: 5px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .support-card {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: 0.4s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .support-card:hover {
+            transform: translateY(-10px);
+        }
+
+        .support-card.owner {
+            border-color: var(--gold);
+        }
+
+        .support-card.developer {
+            border-color: var(--blue);
+        }
+
+        .support-card.buyers {
+            border-color: var(--pink);
+        }
+
+        .support-avatar {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent), #AD4AE7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            font-size: 3rem;
+            transition: 0.3s;
+        }
+
+        .support-card:hover .support-avatar {
+            transform: scale(1.1);
+        }
+
+        .support-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .support-role {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .role-owner {
+            background: rgba(255, 215, 0, 0.2);
+            color: var(--gold);
+            border: 1px solid var(--gold);
+        }
+
+        .role-developer {
+            background: rgba(0, 212, 255, 0.2);
+            color: var(--blue);
+            border: 1px solid var(--blue);
+        }
+
+        .role-buyer {
+            background: rgba(255, 105, 180, 0.2);
+            color: var(--pink);
+            border: 1px solid var(--pink);
+        }
+
+        .support-message {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            line-height: 1.6;
+            margin: 1rem 0;
+        }
+
+        .support-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 25px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: 0.3s;
+        }
+
+        .support-link:hover {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .thankyou-message {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(173, 74, 231, 0.1));
+            border-radius: 30px;
+            padding: 2rem;
+            text-align: center;
+            margin-top: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .contact-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 15px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+            transition: 0.3s;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--accent);
+        }
+
+        .contact-card i {
+            font-size: 2rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .contact-link {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .chat-widget {
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        .chat-toggle {
+            width: 55px;
+            height: 55px;
+            background: linear-gradient(45deg, #ff0000, #AD4AE7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(255, 0, 0, 0.4);
+            transition: 0.3s;
+        }
+
+        .chat-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .chat-toggle i {
+            font-size: 1.5rem;
+            color: white;
+        }
+
+        .chat-box {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            width: 350px;
+            height: 500px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            display: none;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .chat-box.open {
+            display: flex;
+        }
+
+        .chat-header {
+            background: linear-gradient(45deg, #ff0000, #AD4AE7);
+            padding: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chat-header h4 {
+            font-size: 0.9rem;
+        }
+
+        .chat-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .message {
+            max-width: 85%;
+            padding: 10px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            word-break: break-word;
+            line-height: 1.4;
+        }
+
+        .message.bot {
+            background: rgba(255, 255, 255, 0.1);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .message.user {
+            background: var(--accent);
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chat-input-area {
+            padding: 12px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input-area input {
+            flex: 1;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            color: var(--text-primary);
+            outline: none;
+        }
+
+        .chat-input-area button {
+            background: var(--accent);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 2rem 0;
+            border-top: 1px solid var(--border-color);
+            margin-top: 2rem;
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: var(--accent-gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s;
+            z-index: 99;
+        }
+
+        .scroll-top.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 80px;
+            right: 20px;
+            width: 45px;
+            height: 45px;
+            background: var(--card-bg);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 100;
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(5px);
+            transition: 0.3s;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-toggle i {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .live-clock {
+            position: fixed;
+            top: 80px;
+            right: 80px;
+            background: var(--card-bg);
+            padding: 8px 15px;
+            border-radius: 25px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            backdrop-filter: blur(5px);
+            border: 1px solid var(--border-color);
+            z-index: 100;
+            display: flex;
+            gap: 8px;
+        }
+
+        .music-player {
+            position: fixed;
+            bottom: 150px;
+            right: 20px;
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 50px;
+            padding: 8px 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            z-index: 100;
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .music-player:hover {
+            transform: scale(1.05);
+        }
+
+        .music-player i {
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .music-player .music-title {
+            font-size: 0.7rem;
+            max-width: 100px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .visitor-count {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            backdrop-filter: blur(5px);
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: -100%;
+                width: 100%;
+                background: rgba(10, 10, 15, 0.95);
+                flex-direction: column;
+                align-items: center;
+                padding: 2rem;
+                transition: 0.3s;
+                backdrop-filter: blur(10px);
+            }
+            .nav-links.active {
+                left: 0;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .live-clock {
+                display: none;
+            }
+            .chat-box {
+                width: 300px;
+                right: -10px;
+                height: 450px;
+            }
+            .broadcast-container {
+                width: 95%;
+                top: 70px;
+            }
+        }
+
+        #fileInput {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loader">
+            <div class="loader-logo-row">
+                <div class="logo"><i class="fas fa-code"></i></div>
+                <h2>Upin</h2>
+            </div>
+            <div class="loader-bar"><div class="loader-progress"></div></div>
+        </div>
+    </div>
+
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- BROADCAST POPUP -->
+    <div id="broadcastContainer" class="broadcast-container"></div>
+
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
+    <div class="live-clock">
+        <i class="far fa-calendar-alt"></i>
+        <span id="currentDate"></span>
+        <i class="far fa-clock"></i>
+        <span id="currentTime"></span>
+    </div>
+
+    <div class="music-player" id="musicPlayer">
+        <i class="fas fa-music" id="musicIcon"></i>
+        <span class="music-title" id="musicTitle">Gateway</span>
+        <audio id="bgMusic" loop></audio>
+    </div>
+
+    <div class="visitor-count">
+        <i class="fas fa-eye"></i> Visitors: <span id="visitorCount">0</span>
+    </div>
+
+    <div class="chat-widget">
+        <div class="chat-toggle" id="chatToggle">
+            <i class="fas fa-comment-dots"></i>
+        </div>
+        <div class="chat-box" id="chatBox">
+            <div class="chat-header">
+                <h4><i class="fas fa-robot"></i> Vanilla Support AI</h4>
+                <button class="chat-close" id="chatClose">×</button>
+            </div>
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot">
+                    <i class="fas fa-robot"></i> Halo! Saya Vanilla Support, AI Assistant dari Upin. Ada yang bisa saya bantu tentang portofolio ini?
+                </div>
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chatInput" placeholder="Tanyakan tentang fitur, tools, atau Upin...">
+                <button id="sendChatBtn"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <header class="header">
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <h2><i class="fas fa-code"></i> Upin</h2>
+                    <div class="battery-widget" id="batteryWidget">
+                        <div class="battery-icon">
+                            <div class="battery-level" id="batteryLevel"></div>
+                            <div class="battery-tip"></div>
+                        </div>
+                        <span class="battery-text" id="batteryText">--%</span>
+                        <i class="fas fa-bolt charging-icon" id="chargingIcon" style="display: none;"></i>
+                    </div>
+                </div>
+                <ul class="nav-links">
+                    <li><a data-page="home" class="active">Home</a></li>
+                    <li><a data-page="skills">Skills</a></li>
+                    <li><a data-page="projects">Projects</a></li>
+                    <li><a href="https://deploy-upinxd.vercel.app" target="_blank">Deploy</a></li>
+                    <li><a data-page="tools">Tools</a></li>
+                    <li><a data-page="support">Support</a></li>
+                    <li><a data-page="contact">Contact</a></li>
+                    <li><a class="admin-badge" id="adminBtn"><i class="fas fa-crown"></i> Admin</a></li>
+                </ul>
+                <div class="hamburger">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <div id="home" class="page active">
+        <div class="container">
+            <div class="hero">
+                <div class="hero-text">
+                    <h1>Hallo, Saya <span class="highlight">Upin</span></h1>
+                    <div class="typing-text"></div>
+                    <p id="welcomeMessageText">Developer & Bot Creator dengan passion dalam menciptakan solusi digital yang inovatif.</p>
+                    <div class="btn-group">
+                        <button class="btn btn-primary" onclick="showPage('projects')"><i class="fas fa-eye"></i> Lihat Portfolio</button>
+                        <button class="btn btn-secondary" onclick="showPage('support')"><i class="fas fa-heart"></i> Support</button>
+                    </div>
+                </div>
+                <div class="profile-card">
+                    <img src="https://files.catbox.moe/dg9ktj.jpg" alt="Profile">
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="projectsCount">0</div>
+                    <div class="stat-label">Projects Selesai</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="clientsCount">0</div>
+                    <div class="stat-label">Happy Clients</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="experienceCount">0</div>
+                    <div class="stat-label">Years Experience</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="supportsCount">0</div>
+                    <div class="stat-label">Supporters</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="skills" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-tools"></i> Keahlian Saya</h2>
+                <p>Teknologi yang saya kuasai</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card"><i class="fab fa-html5"></i><h3>HTML5</h3><div class="skill-bar"><div class="skill-progress" style="width: 85%"></div></div></div>
+                <div class="skill-card"><i class="fab fa-css3-alt"></i><h3>CSS3</h3><div class="skill-bar"><div class="skill-progress" style="width: 80%"></div></div></div>
+                <div class="skill-card"><i class="fab fa-js"></i><h3>JavaScript</h3><div class="skill-bar"><div class="skill-progress" style="width: 78%"></div></div></div>
+                <div class="skill-card"><i class="fab fa-python"></i><h3>Python</h3><div class="skill-bar"><div class="skill-progress" style="width: 65%"></div></div></div>
+                <div class="skill-card"><i class="fab fa-node-js"></i><h3>Node.js</h3><div class="skill-bar"><div class="skill-progress" style="width: 70%"></div></div></div>
+                <div class="skill-card"><i class="fab fa-react"></i><h3>React</h3><div class="skill-bar"><div class="skill-progress" style="width: 75%"></div></div></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="projects" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-laptop-code"></i> Projects Saya</h2>
+                <p>Beberapa project yang telah saya kerjakan</p>
+            </div>
+            <div class="projects-grid">
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-robot"></i></div>
+                    <div class="project-content">
+                        <h3>Vercel Deploy Bot</h3>
+                        <p>Bot Telegram untuk deploy HTML ke Vercel dengan fitur enkripsi dan premium.</p>
+                        <div class="project-tech"><span>Node.js</span><span>Telegraf</span><span>Vercel API</span></div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-chart-line"></i></div>
+                    <div class="project-content">
+                        <h3>Analytics Dashboard</h3>
+                        <p>Dashboard analisis data interaktif untuk business intelligence.</p>
+                        <div class="project-tech"><span>Python</span><span>Plotly</span><span>Pandas</span></div>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-icon"><i class="fas fa-store"></i></div>
+                    <div class="project-content">
+                        <h3>E-Commerce Platform</h3>
+                        <p>Platform e-commerce modern dengan sistem pembayaran terintegrasi.</p>
+                        <div class="project-tech"><span>React</span><span>Node.js</span><span>MongoDB</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="deploy" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-rocket"></i> Deploy ke Vercel</h2>
+                <p>Upload file HTML dan deploy langsung ke Vercel</p>
+            </div>
+            <div class="deploy-card">
+                <div class="input-group">
+                    <label>Nama Project</label>
+                    <input type="text" id="projectName" class="project-input" placeholder="nama-project-saya">
+                    <small style="color: #64748b;">* huruf kecil, angka, strip (-) saja, 3-30 karakter</small>
+                </div>
+                <div class="drop-zone" id="dropZone">
+                    <i class="fas fa-cloud-upload-alt" style="font-size: 2rem;"></i>
+                    <p>Drag & drop file HTML di sini</p>
+                    <small>atau klik untuk memilih file</small>
+                </div>
+                <div id="fileInfo" style="display: none;">
+                    <div class="file-info">
+                        <div><span id="fileName"></span> <small id="fileSize"></small></div>
+                        <button class="remove-file" id="removeFile">Hapus</button>
+                    </div>
+                </div>
+                <button class="deploy-btn" id="deployBtn"><i class="fas fa-rocket"></i> Deploy ke Vercel</button>
+                <div id="statusArea" class="status-area"></div>
+                <div id="resultArea" class="result-area"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tools" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-cogs"></i> Tools & Layanan</h2>
+                <p>Pilih tools yang ingin Anda gunakan</p>
+            </div>
+            <div class="tools-grid" id="toolsGrid">
+                <div class="tool-card" data-tool="linktree" onclick="openTool('https://linktree-generator.vercel.app')">
+                    <i class="fas fa-tree"></i>
+                    <h3>Linktree Generator</h3>
+                    <p>Buat halaman linktree profesional dengan mudah</p>
+                </div>
+                <div class="tool-card" data-tool="obfuscator" onclick="openTool('https://obfuscator-upinxd.vercel.app')">
+                    <i class="fas fa-shield-alt"></i>
+                    <h3>JS Obfuscator</h3>
+                    <p>Proteksi kode JavaScript Anda dari pembajakan</p>
+                </div>
+                <div class="tool-card" data-tool="music" onclick="openTool('https://tes-music-sepia.vercel.app/')">
+                    <i class="fas fa-headphones"></i>
+                    <h3>Play Music</h3>
+                    <p>Nikmati streaming musik favorit Anda</p>
+                </div>
+                <div class="tool-card" data-tool="quizfake" onclick="openTool('https://quick-fake-beta.vercel.app/')">
+                    <i class="fas fa-camera"></i>
+                    <h3>Quiz Fake</h3>
+                    <p>Buat dan edit foto palsu dengan mudah</p>
+                </div>
+                <div class="tool-card" data-tool="rating" onclick="openTool('https://rating-upin.vercel.app')">
+                    <i class="fas fa-star"></i>
+                    <h3>⭐ Beri Rating</h3>
+                    <p>Berikan penilaian dan review untuk layanan kami</p>
+                    <small style="color: #ffcc00;">★ 1-5 Bintang + Emoticon</small>
+                </div>
+                <div class="tool-card" data-tool="saran" onclick="openTool('https://rating-upin.vercel.app')">
+                    <i class="fas fa-lightbulb"></i>
+                    <h3>💡 Saran Fitur</h3>
+                    <p>Kirim ide fitur baru atau file pendukung</p>
+                    <small style="color: #ffcc00;">Upload HTML/JS/PY + Pesan</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="support" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-heart"></i> Support & Terima Kasih</h2>
+                <p>Terima kasih untuk semua yang telah mendukung perjalanan ini</p>
+            </div>
+            <div class="support-grid">
+                <div class="support-card owner">
+                    <div class="support-avatar"><i class="fas fa-crown"></i></div>
+                    <div class="support-name">@UpinXD</div>
+                    <div class="support-role role-owner"><i class="fas fa-star"></i> Founder & Owner</div>
+                    <div class="support-message">"Terima kasih yang sebesar-besarnya kepada @UpinXD yang telah menciptakan dan mengembangkan project ini dari awal."</div>
+                    <a href="https://t.me/UpinXD" target="_blank" class="support-link"><i class="fab fa-telegram"></i> Hubungi Owner</a>
+                </div>
+                <div class="support-card developer">
+                    <div class="support-avatar"><i class="fas fa-code"></i></div>
+                    <div class="support-name">@VANZZSdev</div>
+                    <div class="support-role role-developer"><i class="fas fa-laptop-code"></i> Developer & Contributor</div>
+                    <div class="support-message">"Terima kasih kepada @VANZZSdev atas kontribusi, ide-ide brilian, dan waktu yang telah diberikan."</div>
+                    <a href="https://t.me/VANZZSdev" target="_blank" class="support-link"><i class="fab fa-telegram"></i> Hubungi Developer</a>
+                </div>
+                <div class="support-card buyers">
+                    <div class="support-avatar"><i class="fas fa-hand-holding-heart"></i></div>
+                    <div class="support-name">Para Buyer & Supporter</div>
+                    <div class="support-role role-buyer"><i class="fas fa-heart"></i> Premium Supporters</div>
+                    <div class="support-message">"Terima kasih untuk semua buyer dan supporter yang telah mempercayai layanan kami."</div>
+                    <button class="support-link" onclick="showToastMsg('Terima kasih telah mendukung!')"><i class="fas fa-heart"></i> Terima Kasih!</button>
+                </div>
+            </div>
+            <div class="thankyou-message">
+                <h3><i class="fas fa-hand-sparkles"></i> Terima Kasih Untuk Semua!</h3>
+                <p>Terima kasih yang sebesar-besarnya kepada semua yang telah mendukung project ini. Setiap dukungan, baik berupa ide, kritik, saran, maupun dukungan finansial, sangat berarti bagi kami.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="contact" class="page">
+        <div class="container">
+            <div class="section-title">
+                <h2><i class="fas fa-envelope"></i> Hubungi Saya</h2>
+                <p>Mari berdiskusi tentang project Anda</p>
+            </div>
+            <div class="contact-grid">
+                <div class="contact-card"><i class="fab fa-telegram"></i><h3>Telegram</h3><p>Chat langsung untuk diskusi</p><a href="https://t.me/UpinXD" class="contact-link" target="_blank">@UpinXD</a></div>
+                <div class="contact-card"><i class="fab fa-whatsapp"></i><h3>WhatsApp</h3><p>Komunikasi cepat via WA</p><a href="https://wa.me/6287730232643" class="contact-link" target="_blank">+62 877-3023-2643</a></div>
+                <div class="contact-card"><i class="fas fa-envelope"></i><h3>Email</h3><p>Email untuk business</p><a href="mailto:daktaudahlah59@gmail.com" class="contact-link">daktaudahlah59@gmail.com</a></div>
+                <div class="contact-card"><i class="fab fa-github"></i><h3>GitHub</h3><p>Follow untuk update project</p><a href="https://github.com/upin" class="contact-link" target="_blank">github.com/upin</a></div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2025 Upin. Made with <i class="fas fa-heart" style="color: #ff0000;"></i> for the community</p>
+        </div>
+    </footer>
+
+    <div class="scroll-top" id="scrollTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+
+    <input type="file" id="fileInput" accept=".html,.htm">
+
+    <script>
+        // ==================== KONFIGURASI ====================
+        const BACKEND_URL = '';
+        
+        let deployments = [];
+        let maintenanceMode = false;
+        let maintenanceMessage = '';
+        let maintenanceTools = [];
+        let visitorCount = 0;
+        let currentBroadcast = null;
+        let broadcastInterval = null;
+        let lastBroadcastSeen = null;
+        
+        // Tools yang bisa di-maintenance
+        const toolsList = ['linktree', 'obfuscator', 'music', 'quizfake', 'rating', 'saran', 'deploy'];
+        
+        // ==================== LOAD & SAVE LOCAL ====================
+        function loadLocalData() {
+            const savedDeployments = localStorage.getItem('deployments');
+            if (savedDeployments) deployments = JSON.parse(savedDeployments);
+            const savedVisitors = localStorage.getItem('total_visitors');
+            if (savedVisitors) visitorCount = parseInt(savedVisitors);
+            updateDisplayStats();
+        }
+
+        function saveLocalData() {
+            localStorage.setItem('deployments', JSON.stringify(deployments));
+            localStorage.setItem('total_visitors', visitorCount);
+        }
+
+        function updateDisplayStats() {
+            document.getElementById('projectsCount').innerText = deployments.length;
+            document.getElementById('clientsCount').innerText = Math.floor(Math.random() * 50) + 10;
+            document.getElementById('experienceCount').innerText = '2';
+            document.getElementById('supportsCount').innerText = deployments.length + 15;
+            document.getElementById('visitorCount').innerText = visitorCount;
+        }
+
+        function updateVisitorCount() {
+            visitorCount++;
+            saveLocalData();
+            updateDisplayStats();
+        }
+
+        function animateStats() {
+            const counters = document.querySelectorAll('.stat-number');
+            counters.forEach(counter => {
+                const target = parseInt(counter.innerText);
+                let current = 0;
+                const increment = target / 30;
+                const updateCounter = () => {
+                    if (current < target) {
+                        current += increment;
+                        counter.innerText = Math.floor(current);
+                        setTimeout(updateCounter, 50);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCounter();
+            });
+        }
+
+        // ==================== LOAD FROM BACKEND ====================
+        async function loadSettingsFromBackend() {
+            try {
+                // Load maintenance status
+                const maintRes = await fetch(`${BACKEND_URL}/api/maintenance-status`);
+                const maintData = await maintRes.json();
+                maintenanceMode = maintData.active;
+                maintenanceMessage = maintData.message;
+                
+                // Load tools maintenance
+                const toolsRes = await fetch(`${BACKEND_URL}/api/admin/tools-maintenance`);
+                const toolsData = await toolsRes.json();
+                if (toolsData.success) maintenanceTools = toolsData.data;
+                
+                // Load welcome message
+                const settingsRes = await fetch(`${BACKEND_URL}/api/admin/settings`);
+                const settingsData = await settingsRes.json();
+                if (settingsData.success && settingsData.data.welcomeMessage) {
+                    document.getElementById('welcomeMessageText').innerText = settingsData.data.welcomeMessage;
+                }
+                
+                // Load broadcast
+                const broadcastRes = await fetch(`${BACKEND_URL}/api/admin/broadcasts`);
+                const broadcastData = await broadcastRes.json();
+                if (broadcastData.success && broadcastData.data && broadcastData.data.length > 0) {
+                    // Ambil broadcast yang belum expired
+                    const activeBroadcast = broadcastData.data.find(b => new Date(b.expiresAt) > new Date());
+                    if (activeBroadcast) {
+                        showBroadcast(activeBroadcast);
+                    }
+                }
+                
+                // Load MP3 URL
+                const mp3Res = await fetch(`${BACKEND_URL}/api/admin/mp3`);
+                const mp3Data = await mp3Res.json();
+                if (mp3Data.mp3Url) {
+                    document.getElementById('bgMusic').src = mp3Data.mp3Url;
+                }
+                
+            } catch (err) {
+                console.log('Gagal load settings dari backend:', err);
+            }
+        }
+        
+        // ==================== BROADCAST SYSTEM ====================
+        function showBroadcast(broadcast) {
+            const container = document.getElementById('broadcastContainer');
+            const lastSeen = localStorage.getItem('lastBroadcastId');
+            
+            // Cek apakah broadcast sudah dilihat
+            if (lastSeen === broadcast.id.toString()) {
+                // Cek apakah sudah lewat 1 jam
+                const lastSeenTime = localStorage.getItem('lastBroadcastTime');
+                if (lastSeenTime && (Date.now() - parseInt(lastSeenTime)) < 60 * 60 * 1000) {
+                    return; // Belum 1 jam, jangan tampilkan lagi
+                }
+            }
+            
+            // Warna background berdasarkan pilihan
+            const colors = {
+                red: 'linear-gradient(135deg, #ff0000, #cc0000)',
+                blue: 'linear-gradient(135deg, #0066ff, #0033cc)',
+                green: 'linear-gradient(135deg, #00cc66, #009944)',
+                purple: 'linear-gradient(135deg, #9933ff, #6600cc)'
+            };
+            
+            const bgColor = colors[broadcast.color] || colors.red;
+            
+            container.innerHTML = `
+                <div class="broadcast-card" style="background: ${bgColor};">
+                    <div class="close-broadcast" onclick="closeBroadcast()">✕</div>
+                    <h4><i class="fas fa-bullhorn"></i> ${escapeHtml(broadcast.title)}</h4>
+                    <p>${escapeHtml(broadcast.message)}</p>
+                    <small style="opacity:0.8;">Klik untuk tutup</small>
+                </div>
+            `;
+            container.style.display = 'block';
+            
+            // Simpan bahwa broadcast ini sudah dilihat
+            localStorage.setItem('lastBroadcastId', broadcast.id);
+            localStorage.setItem('lastBroadcastTime', Date.now());
+            
+            // Auto hide setelah 30 detik
+            setTimeout(() => {
+                if (container.style.display === 'block') {
+                    container.style.display = 'none';
+                }
+            }, 30000);
+        }
+        
+        function closeBroadcast() {
+            document.getElementById('broadcastContainer').style.display = 'none';
+        }
+        
+        // ==================== MAINTENANCE CHECK ====================
+        function isToolInMaintenance(toolName) {
+            if (!maintenanceMode) return false;
+            return maintenanceTools.includes(toolName);
+        }
+        
+        function updateToolsMaintenance() {
+            const toolCards = document.querySelectorAll('.tool-card');
+            toolCards.forEach(card => {
+                const tool = card.getAttribute('data-tool');
+                if (tool && isToolInMaintenance(tool)) {
+                    card.classList.add('disabled');
+                    if (!card.querySelector('.maintenance-badge')) {
+                        const badge = document.createElement('div');
+                        badge.className = 'maintenance-badge';
+                        badge.innerHTML = '<i class="fas fa-tools"></i> Maintenance';
+                        card.appendChild(badge);
+                    }
+                    card.onclick = (e) => {
+                        e.stopPropagation();
+                        showMaintenanceWarning();
+                        return false;
+                    };
+                } else {
+                    card.classList.remove('disabled');
+                    const badge = card.querySelector('.maintenance-badge');
+                    if (badge) badge.remove();
+                    if (tool === 'deploy') {
+                        // Deploy card tidak pakai onclick bawaan
+                    } else if (tool === 'linktree') {
+                        card.onclick = () => openTool('https://linktree-generator.vercel.app');
+                    } else if (tool === 'obfuscator') {
+                        card.onclick = () => openTool('https://obfuscator-upinxd.vercel.app');
+                    } else if (tool === 'music') {
+                        card.onclick = () => openTool('https://tes-music-sepia.vercel.app/');
+                    } else if (tool === 'quizfake') {
+                        card.onclick = () => openTool('https://quick-fake-beta.vercel.app/');
+                    } else if (tool === 'rating' || tool === 'saran') {
+                        card.onclick = () => openTool('https://rating-upin.vercel.app');
+                    }
+                }
+            });
+        }
+        
+        function showMaintenanceWarning() {
+            showToastMsg(`🔧 ${maintenanceMessage || 'Fitur ini sedang dalam maintenance. Coba lagi nanti!'}`, true);
+        }
+        
+        // ==================== OPEN TOOL ====================
+        function openTool(url) {
+            window.open(url, '_blank');
+        }
+        
+        // ==================== PAGE NAVIGATION ====================
+        function showPage(pageId) {
+            document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.nav-links a[data-page]').forEach(link => link.classList.remove('active'));
+            const activeLink = document.querySelector(`.nav-links a[data-page="${pageId}"]`);
+            if (activeLink) activeLink.classList.add('active');
+            const navLinksEl = document.querySelector('.nav-links');
+            const hamburgerEl = document.querySelector('.hamburger');
+            if (navLinksEl.classList.contains('active')) {
+                navLinksEl.classList.remove('active');
+                hamburgerEl.classList.remove('active');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        document.querySelectorAll('.nav-links a[data-page]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                showPage(link.getAttribute('data-page'));
+            });
+        });
+
+        // ==================== TYPING EFFECT ====================
+        const texts = ['Vibe Coding Developer', 'Bot Creator', 'Web Developer', 'Problem Solver', 'Tech Enthusiast'];
+        let textIndex = 0, charIndex = 0, isDeleting = false;
+        const typingEl = document.querySelector('.typing-text');
+
+        function typeEffect() {
+            const current = texts[textIndex];
+            typingEl.textContent = isDeleting ? current.substring(0, charIndex - 1) : current.substring(0, charIndex + 1);
+            charIndex += isDeleting ? -1 : 1;
+            let speed = 100;
+            if (!isDeleting && charIndex === current.length) {
+                speed = 2000;
+                isDeleting = true;
+            } else if (isDeleting && charIndex === 0) {
+                isDeleting = false;
+                textIndex = (textIndex + 1) % texts.length;
+                speed = 500;
+            }
+            setTimeout(typeEffect, speed);
+        }
+        typeEffect();
+
+        // ==================== CLOCK ====================
+        function startLiveClock() {
+            function updateClock() {
+                const now = new Date();
+                document.getElementById('currentDate').innerText = now.toLocaleDateString('id-ID');
+                document.getElementById('currentTime').innerText = now.toLocaleTimeString('id-ID');
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+        }
+
+        // ==================== PARTICLES ====================
+        function initParticles() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+            let width, height;
+            let particles = [];
+
+            function resizeCanvas() {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener('resize', resizeCanvas);
+
+            function createParticles() {
+                particles = [];
+                for (let i = 0; i < 80; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        size: Math.random() * 2 + 1,
+                        vx: (Math.random() - 0.5) * 0.8,
+                        vy: (Math.random() - 0.5) * 0.8,
+                        color: `rgba(255, ${Math.random() * 100 + 50}, ${Math.random() * 100}, ${Math.random() * 0.4 + 0.2})`
+                    });
+                }
+            }
+            createParticles();
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0 || p.x > width) p.vx *= -1;
+                    if (p.y < 0 || p.y > height) p.vy *= -1;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.fill();
+                });
+                requestAnimationFrame(animateParticles);
+            }
+            animateParticles();
+        }
+
+        // ==================== THEME TOGGLE ====================
+        const themeToggle = document.getElementById('themeToggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('light-mode');
+            const icon = themeToggle.querySelector('i');
+            if (document.body.classList.contains('light-mode')) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+
+        // ==================== MUSIC PLAYER ====================
+        const musicPlayer = document.getElementById('musicPlayer');
+        const bgMusic = document.getElementById('bgMusic');
+        let isPlaying = false;
+
+        musicPlayer.addEventListener('click', () => {
+            if (isPlaying) {
+                bgMusic.pause();
+                musicPlayer.querySelector('i').classList.remove('fa-pause');
+                musicPlayer.querySelector('i').classList.add('fa-music');
+            } else {
+                bgMusic.play().catch(e => console.log('Autoplay prevented'));
+                musicPlayer.querySelector('i').classList.remove('fa-music');
+                musicPlayer.querySelector('i').classList.add('fa-pause');
+            }
+            isPlaying = !isPlaying;
+        });
+
+        // ==================== SCROLL ====================
+        const scrollTop = document.getElementById('scrollTop');
+        const header = document.querySelector('.header');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                scrollTop.classList.add('show');
+            } else {
+                scrollTop.classList.remove('show');
+            }
+            if (window.scrollY > 50) {
+                header.style.background = 'rgba(10, 10, 15, 0.95)';
+            } else {
+                header.style.background = 'rgba(10, 10, 15, 0.9)';
+            }
+        });
+
+        scrollTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ==================== HAMBURGER ====================
+        const hamburgerBtn = document.querySelector('.hamburger');
+        const navLinksMenu = document.querySelector('.nav-links');
+
+        hamburgerBtn.addEventListener('click', () => {
+            hamburgerBtn.classList.toggle('active');
+            navLinksMenu.classList.toggle('active');
+        });
+
+        // ==================== ADMIN BUTTON ====================
+        document.getElementById('adminBtn').addEventListener('click', () => {
+            window.open('https://admin-upin.vercel.app', '_blank');
+        });
+
+        // ==================== DEPLOY FUNCTION ====================
+        let selectedFile = null;
+        const projectInput = document.getElementById('projectName');
+        const dropZone = document.getElementById('dropZone');
+        const fileInput = document.getElementById('fileInput');
+        const fileInfoDiv = document.getElementById('fileInfo');
+        const fileNameSpan = document.getElementById('fileName');
+        const fileSizeSpan = document.getElementById('fileSize');
+        const removeFileBtn = document.getElementById('removeFile');
+        const deployBtn = document.getElementById('deployBtn');
+        const statusArea = document.getElementById('statusArea');
+        const resultArea = document.getElementById('resultArea');
+
+        dropZone.onclick = () => fileInput.click();
+        dropZone.ondragover = (e) => { e.preventDefault(); dropZone.classList.add('drag-over'); };
+        dropZone.ondragleave = () => dropZone.classList.remove('drag-over');
+        dropZone.ondrop = (e) => {
+            e.preventDefault();
+            dropZone.classList.remove('drag-over');
+            if (e.dataTransfer.files.length) handleFile(e.dataTransfer.files[0]);
+        };
+        fileInput.onchange = (e) => { if (e.target.files.length) handleFile(e.target.files[0]); };
+
+        function handleFile(file) {
+            if (!file.name.endsWith('.html') && !file.name.endsWith('.htm')) {
+                showStatus('error', 'Harap pilih file HTML (.html atau .htm)');
+                return;
+            }
+            selectedFile = file;
+            fileNameSpan.textContent = file.name;
+            fileSizeSpan.textContent = formatFileSize(file.size);
+            fileInfoDiv.style.display = 'block';
+            showStatus('success', 'File siap: ' + file.name);
+        }
+
+        removeFileBtn.onclick = () => {
+            selectedFile = null;
+            fileInfoDiv.style.display = 'none';
+            fileInput.value = '';
+            showStatus('', '');
+            resultArea.classList.remove('show');
+        };
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function showStatus(type, message) {
+            statusArea.className = 'status-area';
+            if (type === 'loading') {
+                statusArea.classList.add('loading');
+                statusArea.innerHTML = `<i class="fas fa-spinner fa-pulse"></i> ${message}`;
+            } else if (type === 'success') {
+                statusArea.classList.add('success');
+                statusArea.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+            } else if (type === 'error') {
+                statusArea.classList.add('error');
+                statusArea.innerHTML = `<i class="fas fa-exclamation-circle"></i> ${message}`;
+            } else {
+                statusArea.innerHTML = '';
+            }
+        }
+
+        function showResult(url, projectName) {
+            resultArea.classList.add('show');
+            resultArea.innerHTML = `
+                <div style="color: #22c55e; margin-bottom: 10px;"><i class="fas fa-check-circle"></i> DEPLOYMENT BERHASIL!</div>
+                <div class="result-url"> <a href="${url}" target="_blank">${url}</a></div>
+                <button class="copy-btn" onclick="copyToClipboard('${url}')"><i class="fas fa-copy"></i> Copy Link</button>
+                <div style="margin-top: 10px; font-size: 0.8rem; color: #94a3b8;"> Project: ${projectName}</div>
+            `;
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const btn = document.querySelector('.copy-btn');
+                if (btn) {
+                    btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                    setTimeout(() => btn.innerHTML = '<i class="fas fa-copy"></i> Copy Link', 2000);
+                }
+            });
+        }
+
+        deployBtn.onclick = async () => {
+            // Cek maintenance untuk fitur deploy
+            if (isToolInMaintenance('deploy')) {
+                showMaintenanceWarning();
+                return;
+            }
+            
+            if (maintenanceMode) {
+                showStatus('error', 'Website sedang dalam maintenance. Silakan coba lagi nanti.');
+                return;
+            }
+            
+            const projectName = projectInput.value.trim().toLowerCase();
+            if (!projectName) { showStatus('error', 'Masukkan nama project!'); return; }
+            if (!/^[a-z0-9-]+$/.test(projectName)) { showStatus('error', 'Nama project hanya boleh huruf kecil, angka, dan strip (-)'); return; }
+            if (projectName.length < 3 || projectName.length > 30) { showStatus('error', 'Nama project harus 3-30 karakter'); return; }
+            if (!selectedFile) { showStatus('error', 'Pilih file HTML!'); return; }
+
+            deployBtn.disabled = true;
+            showStatus('loading', 'Mengupload file ke server...');
+            resultArea.classList.remove('show');
+
+            const formData = new FormData();
+            formData.append('projectName', projectName);
+            formData.append('file', selectedFile);
+
+            try {
+                const response = await fetch(`${BACKEND_URL}/api/deploy`, { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    showStatus('success', 'Deployment berhasil!');
+                    showResult(data.url, projectName);
+                    const newDeploy = {
+                        id: Date.now(),
+                        projectName,
+                        url: data.url,
+                        date: new Date().toISOString(),
+                        userId: 'user_' + Math.random().toString(36).substring(2, 8)
+                    };
+                    deployments.unshift(newDeploy);
+                    saveLocalData();
+                    updateDisplayStats();
+                } else {
+                    showStatus('error', data.error || 'Gagal deploy');
+                }
+            } catch (error) {
+                showStatus('error', 'Gagal terhubung ke server: ' + error.message);
+            } finally {
+                deployBtn.disabled = false;
+            }
+        };
+
+        // ==================== AI SUPPORT ====================
+        const chatToggle = document.getElementById('chatToggle');
+        const chatBox = document.getElementById('chatBox');
+        const chatClose = document.getElementById('chatClose');
+        const chatInput = document.getElementById('chatInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const sendChatBtn = document.getElementById('sendChatBtn');
+
+        chatToggle.addEventListener('click', () => chatBox.classList.toggle('open'));
+        chatClose.addEventListener('click', () => chatBox.classList.remove('open'));
+
+        function addMessage(text, sender) {
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${sender}`;
+            if (sender === 'bot') {
+                msgDiv.innerHTML = `<i class="fas fa-robot"></i> ${text}`;
+            } else {
+                msgDiv.textContent = text;
+            }
+            chatMessages.appendChild(msgDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        async function typeMessageToChat(fullText) {
+            return new Promise((resolve) => {
+                const msgDiv = document.createElement('div');
+                msgDiv.className = 'message bot';
+                msgDiv.innerHTML = '<i class="fas fa-robot"></i> <span class="typing-text-span"></span>';
+                chatMessages.appendChild(msgDiv);
+                
+                const textSpan = msgDiv.querySelector('.typing-text-span');
+                let i = 0;
+                const speed = 15;
+                
+                function typeNextChar() {
+                    if (i < fullText.length) {
+                        textSpan.innerHTML += fullText[i];
+                        i++;
+                        chatMessages.scrollTop = chatMessages.scrollHeight;
+                        setTimeout(typeNextChar, speed);
+                    } else {
+                        resolve();
+                    }
+                }
+                typeNextChar();
+            });
+        }
+
+        async function sendMessage() {
+            const msg = chatInput.value.trim();
+            if (!msg) return;
+            
+            addMessage(msg, 'user');
+            chatInput.value = '';
+            
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'message bot';
+            loadingDiv.id = 'loadingIndicator';
+            loadingDiv.innerHTML = '<i class="fas fa-robot"></i> <em>Sedang berpikir...</em>';
+            chatMessages.appendChild(loadingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            
+            try {
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 20000);
+                
+                const response = await fetch(`${BACKEND_URL}/api/chat`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: msg }),
+                    signal: controller.signal
+                });
+                
+                clearTimeout(timeoutId);
+                
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                
+                const data = await response.json();
+                loadingDiv.remove();
+                
+                let fullReply = data.reply || "Maaf, saya tidak bisa menjawab saat ini. Coba tanyakan tentang fitur portofolio ya!";
+                fullReply = fullReply.replace(/\*/g, '');
+                fullReply = fullReply.replace(/\*\*/g, '');
+                
+                await typeMessageToChat(fullReply);
+                
+            } catch (error) {
+                loadingDiv.remove();
+                let errorMsg = "Maaf, terjadi kesalahan. Coba tanyakan lagi nanti ya!";
+                if (error.name === 'AbortError') {
+                    errorMsg = "Server sedang sibuk, coba tanyakan lagi dalam beberapa saat ya!";
+                }
+                addMessage(errorMsg, 'bot');
+            }
+        }
+
+        sendChatBtn.addEventListener('click', sendMessage);
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        // ==================== TOAST MESSAGE ====================
+        function showToastMsg(message, isError = false) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 100px;
+                left: 50%;
+                transform: translateX(-50%);
+                background: ${isError ? '#ff4444' : '#1DB954'};
+                color: ${isError ? 'white' : 'black'};
+                padding: 12px 24px;
+                border-radius: 30px;
+                font-weight: 600;
+                z-index: 9999;
+                animation: fadeInUp 0.3s ease;
+                white-space: nowrap;
+                font-size: 0.85rem;
+            `;
+            toast.innerHTML = message;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        // ==================== BATTERY ====================
+        function initBattery() {
+            if ('getBattery' in navigator) {
+                navigator.getBattery().then(batt => {
+                    function update() {
+                        const pct = Math.round(batt.level * 100);
+                        document.getElementById('batteryText').innerText = pct + '%';
+                        document.getElementById('batteryLevel').style.width = pct + '%';
+                        if (pct <= 20) document.getElementById('batteryLevel').style.background = '#f87171';
+                        else if (pct <= 50) document.getElementById('batteryLevel').style.background = '#fbbf24';
+                        else document.getElementById('batteryLevel').style.background = '#4ade80';
+                        document.getElementById('chargingIcon').style.display = batt.charging ? 'block' : 'none';
+                    }
+                    batt.addEventListener('levelchange', update);
+                    batt.addEventListener('chargingchange', update);
+                    update();
+                });
+            } else {
+                document.getElementById('batteryWidget').style.display = 'none';
+            }
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            return text.replace(/[&<>]/g, function(m) {
+                if (m === '&') return '&amp;';
+                if (m === '<') return '&lt;';
+                if (m === '>') return '&gt;';
+                return m;
+            });
+        }
+
+        // ==================== REFRESH LOOP ====================
+        function startAutoRefresh() {
+            setInterval(async () => {
+                await loadSettingsFromBackend();
+                updateToolsMaintenance();
+            }, 30000);
+        }
+
+        // ==================== INIT ====================
+        window.addEventListener('load', async () => {
+            setTimeout(() => {
+                document.getElementById('loadingScreen').classList.add('hidden');
+            }, 1500);
+            
+            loadLocalData();
+            updateVisitorCount();
+            startLiveClock();
+            initParticles();
+            animateStats();
+            initBattery();
+            
+            await loadSettingsFromBackend();
+            updateToolsMaintenance();
+            startAutoRefresh();
+        });
+
+        // Export functions ke global
+        window.copyToClipboard = copyToClipboard;
+        window.showToastMsg = showToastMsg;
+        window.showPage = showPage;
+        window.closeBroadcast = closeBroadcast;
+        window.openTool = openTool;
+    </script>
+</body>
+</html>
