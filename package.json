@@ -1,0 +1,31 @@
+{
+  "name": "vercel-deploy-bot",
+  "version": "1.0.0",
+  "description": "Telegram Bot untuk deploy HTML ke Vercel dengan fitur enkripsi dan p>
+  "main": "utama.js",
+  "scripts": {
+    "start": "node utama.js",
+    "dev": "node utama.js"
+  },
+  "keywords": [
+    "telegram-bot",
+    "vercel",
+    "deploy",
+    "html",
+    "encryption"
+  ],
+  "author": "@UpinXD",
+  "license": "MIT",
+  "dependencies": {
+    "archiver": "^7.0.1",
+    "axios": "^1.7.7",
+    "cheerio": "^1.0.0",
+    "crypto-js": "^4.2.0",
+    "express": "^5.2.1",
+    "fs-extra": "^11.2.0",
+    "multer": "^2.1.1",
+    "node-telegram-bot-api": "^0.66.0",
+    "tmp": "^0.2.3",
+    "uuid": "^10.0.0"
+  }
+}
